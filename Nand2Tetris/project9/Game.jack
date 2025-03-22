@@ -1,0 +1,96 @@
+class Game {
+    /* Fields */
+    field Snake snake;
+    field Food food;
+    field ScoreBoard scoreBoard;
+    field int SCREEN_HEIGHT;
+    field int SCREEN_WIDTH;
+
+    /* Constructor */
+    constructor Game new(){
+        let SCREEN_WIDTH = 512;  
+        let SCREEN_HEIGHT = 256; 
+        let snake = Snake.new(50, 50, 10);
+        let food = Food.new();
+        let scoreBoard = ScoreBoard.new();
+        return this;
+    }
+
+    method void init() {
+    // Clear the screen
+    do Screen.clearScreen();
+    // Draw the snake in its initial position
+    do snake.draw();
+    do food.randomPlacer(snake);
+    do food.drawApple();
+    do scoreBoard.display();
+    return;
+}
+
+    method void runTime() {
+        var int key;
+        var boolean gameOver;
+        let gameOver = false;
+
+        while (~gameOver) {
+            let key = Keyboard.keyPressed(); // read the keyboard key pressed
+
+            if (key = 131) { // up arrow
+                do snake.turn(0); // 0 = up
+            }
+            if (key = 132) { // right arrow
+                do snake.turn(1); // 1 = right
+            }
+            if (key = 133) { // down arrow
+                do snake.turn(2); // 2 = down
+            }
+            if (key = 130) { // left arrow
+                do snake.turn(3); // 3 = left
+            }
+
+            // Move the snake according to the direction.
+            do snake.move();
+
+            // Check collisions
+            if (snake.collidesWithWall(SCREEN_WIDTH, SCREEN_HEIGHT)) {
+                let gameOver = true;
+            }
+            if (snake.collidesWithBody()) {
+                let gameOver = true;
+            }
+
+            // Check if the snake ate the apple
+            if (((snake.getHeadX() < (food.getX() +12)) & (snake.getHeadX() > (food.getX() - 12)))
+             &((snake.getHeadY() < (food.getY() +15)) & (snake.getHeadY() > (food.getY() -17))))
+            {
+                do snake.grow();
+                do Screen.clearScreen();
+                do snake.draw();
+                do food.randomPlacer(snake);
+                do food.drawApple();      // draw the apple
+                do scoreBoard.increment(); // ate food -> increase score
+                do scoreBoard.display();   // update the score display
+            }
+            else {
+                // If no collision and no apple eaten, just redraw
+                do Screen.clearScreen();
+                do food.drawApple();
+                do snake.draw();
+                do scoreBoard.display();
+            }
+            do Sys.wait(1);
+        }
+
+        // When gameOver is true, display the scoreboard
+        do scoreBoard.show();
+        return;
+    }
+
+    method void dispose(){
+        do snake.dispose();
+        do food.dispose();
+        do scoreBoard.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+}

@@ -1,0 +1,110 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/5/CPU.hdl
+/**
+ * The Hack Central Processing unit (CPU).
+ * Parses the binary code in the instruction input and executes it according to the
+ * Hack machine language specification. In the case of a C-instruction, computes the
+ * function specified by the instruction. If the instruction specifies to read a memory
+ * value, the inM input is expected to contain this value. If the instruction specifies
+ * to write a value to the memory, sets the outM output to this value, sets the addressM
+ * output to the target address, and asserts the writeM output (when writeM = 0, any
+ * value may appear in outM).
+ * If the reset input is 0, computes the address of the next instruction and sets the
+ * pc output to that value. If the reset input is 1, sets pc to 0.
+ * Note: The outM and writeM outputs are combinational: they are affected by the
+ * instruction's execution during the current cycle. The addressM and pc outputs are
+ * clocked: although they are affected by the instruction's execution, they commit to
+ * their new values only in the next cycle.
+ */
+CHIP CPU {
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset==1) or continue executing
+                         // the current program (reset==0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write to M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+	//the MSB of the instruction determines whether it is A or C instruction
+    // 0 if A and 1 if C
+    // check if it is A-instruction or C-instruction.
+    Not(in=instruction[15], out=Ainstruction);
+    //b is for the A instruction, a is the computed value by the ALU output (used for C-instructions to update the A-register)
+    //the outM1 is received from the ALU
+    Mux16(a= outM1, b= instruction, sel= Ainstruction, out= toARegister);
+    //we check the control bits acordint to 5 MSB (the 1st c in the graph)
+    //1110011111*0*10111 
+    //determining whether the A-register should be loaded with a value
+    Or(a=Ainstruction, b=instruction[5], out=loadA);
+    //out[0..14]=addressM connects the lower 15 bits of the A-register to the memory address (addressM)
+    //used for the next run as addressM, no nee out[15] which is just for the instruction: choose A or C inst.
+    //"save"/ assign the addressM value
+    ARegister(in=toARegister, load=loadA, out= aRegister, out[0..14]=addressM);
+    //instruction[12] indicates weather the ALU use A-register as y or M as y 
+    //A-register if instruaction[12] = 0 , M memory if instruaction[12] = 1
+    //ensures the ALU gets the correct y input
+
+    And(a= instruction[15], b= instruction[12], out= AorM);
+    //we set it only in case it's an A instruction and thr c-bit is 1
+    //if instruction[12] = 0, the ALU uses the value of the A-register
+    //if instruction[12] = 1, the ALU uses the value from memory at the address in the A-register
+    Mux16(a= aRegister, b= inM, sel= AorM, out= aRegInMout);
+
+    //instruction[15] to get to D register
+    //instruction[4] for the c-bit
+    //11100111110*1*0111
+    And(a= instruction[15], b= instruction[4], out= loadD);
+    DRegister(in= outM1, load= loadD, out= dRegister);
+
+    //set the ALU acording to the num in the ppt. implementation
+    //The flags zr, ng are used for jump decisions
+    //"save"/ assign the outM and outM1 value
+    ALU(x= dRegister, y= aRegInMout, zx= instruction[11], nx= instruction[10], zy= instruction[9], ny= instruction[8], f= instruction[7], no= instruction[6], out= outM, out=outM1, zr= zr, ng= ng);
+    
+    //check if we need to write into memory
+    //accordint to the instruction at 3 MSB
+    //we also check that the instruction at 15 MSB is one to tell us it's a C instruction
+    And(a= instruction[15], b= instruction[3], out= writeM);
+
+    //checks if the output is not negative & not zero -> which is greater than 0
+    //it is used for the JGT cindition
+    Not(in= ng, out= notNegative);
+    Not(in= zr, out= notZero);
+    And(a= notNegative, b= notZero, out= biggerThanZr);
+
+    //check if output of ALU is bigger to zero
+    And(a= instruction[15], b= instruction[0], out= JGT);
+    And(a= JGT, b= biggerThanZr, out= load1);
+
+    //check if output of ALU is equal to zero
+    And(a= instruction[15], b= instruction[1], out= JEQ);
+    //zr indicates if the ALU output is zero
+    //we need it because the instruction[1] has 1 oin >= and not eq to 0 and unconditioional jump
+    And(a= JEQ, b= zr, out= load2); 
+
+    //check if output of ALU is equal or bigger than zero
+    And(a= instruction[15], b= instruction[2], out= JLT);
+    And(a= JLT, b= ng, out= load3);
+
+    //load1: Indicates whether the JGT (greater than zero) condition is satisfied
+    //load2: Indicates whether the JEQ (equal to zero) condition is satisfied
+    //load3: Indicates whether the JLT (less than zero) condition is satisfied
+
+    //check if we need to JUMP
+    //check between 3 options with a "function" that receive 2 inputs
+    //check between load1 and load2 - if one of them is 1 -> call it load4
+    //check between load4 and load3 - if one of them is 1 -> call it load5
+    Or(a= load1 , b= load2, out= load4);
+    Or(a= load3, b= load4, out= load5);
+    
+    //load5 = 1: Load the A-register value into the PC (perform a jump)
+    //load5 = 0: Do not load the A-register into the PC
+    //out[0..14]=pc: Outputs the 15-bit memory address for the next instruction
+    PC(in= aRegister, load= load5, inc= true, reset= reset, out[0..14]=pc);
+}

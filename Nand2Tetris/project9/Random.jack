@@ -1,0 +1,38 @@
+class Random {
+
+    static int location;
+
+    function void setSeed(int initialSeed) {
+        let location = initialSeed;
+        return;
+    }
+
+    function int rand() {
+        /** return a random number in the range 0..32767 */
+        let location = location + 20251;
+        if (location < 0) {
+            let location = location - 32767 - 1;
+        }
+        return location;
+    }
+
+    function int randRange(int limit) {
+        /** return a random number in the range 0..limit */
+        var int temp;
+        var int generatedNumber;
+        let temp = 1;
+        while (temp < limit) {
+            let temp = temp * 2 + 1;
+        }
+        let generatedNumber = Random.rand() & temp;
+        while (generatedNumber > limit) {
+            let generatedNumber = Random.rand() & temp;
+        }
+        return generatedNumber;
+    }
+    
+    method void dispose(){
+        do Memory.deAlloc(this);
+        return;
+    }
+}

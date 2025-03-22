@@ -1,0 +1,53 @@
+class ScoreBoard {
+    /* Fields */
+    field int score;
+    field String s1;
+    field String s2;
+    field String s3;
+
+    /** Constructor: Initializes the score board. */
+    constructor ScoreBoard new() {
+        let score = 0; // Initial score is 0
+        let s1 = "Game Over!";
+        let s2 = "Final Score: ";
+        let s3 = "Please restart the game";
+        return this;
+    }
+
+    method void increment(){
+        let score = (score + 1);
+        return;
+    }
+
+    method void display(){
+        var String s;
+        let s = "Score: "; 
+        do Output.moveCursor(0,0); //set cursor to top-left corner
+        do Output.printString(s);
+        do Output.printInt(score); //display current score
+        do s.dispose();
+        return;
+    }
+
+    method void show(){
+        do Screen.clearScreen(); //clear entire screen
+        //display "game over" message
+        do Output.moveCursor(11,20); //move to the middle of the screen
+        do Output.printString(s1);
+
+        //display final score
+        do Output.moveCursor(12,20); //display below the game over
+        do Output.printString(s2);
+        do Output.printInt(score);
+        
+
+        //reset message 
+        do Output.moveCursor(13,20); // under thr score
+        do Output.printString(s3);
+        return;
+    }
+    method void dispose(){
+        do Memory.deAlloc(this);
+        return;
+    }
+}

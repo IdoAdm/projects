@@ -1,0 +1,30 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/3/a/PC.hdl
+/**
+ * A 16-bit counter.
+ * if      reset(t): out(t+1) = 0
+ * else if load(t):  out(t+1) = in(t)
+ * else if inc(t):   out(t+1) = out(t) + 1
+ * else              out(t+1) = out(t)
+ */
+CHIP PC {
+    IN in[16], reset, load, inc;
+    OUT out[16];
+    
+    PARTS:
+    //Register to hold the current PC value
+    Register(in=nextValue, load=true, out=currentValue);
+    //we create an incremented value to be chosen if inc is asserted.
+    Inc16(in=currentValue , out= incremented );
+     // Select next value based on control signals
+     //first we see if we need to increment the value stored in the register. we will pass the result to the next Mux.
+    Mux16(a=currentValue, b=incremented, sel=inc, out=incrementOrCurrent);
+    //now we will see if we need to load a new value to the register, and pass the result to the next Mux as well.
+    Mux16(a=incrementOrCurrent, b=in, sel=load, out=loadOrCurrent);
+    // the last choice would be if to reset the PC or not.
+    Mux16(a=loadOrCurrent, b=false, sel=reset, out=nextValue);
+    // in the end we need to pass the desired value back to a register where it can be stored
+    Register(in=nextValue, load= true, out=out);
+}

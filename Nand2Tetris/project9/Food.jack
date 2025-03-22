@@ -1,0 +1,66 @@
+class Food {
+    //represents the food on the game
+    //location (x,y) of the food on screen
+        field int x;
+        field int y;
+        field int location; 
+
+        constructor Food new(){
+            //default initioal posotion - init to (0,0)
+            let x = 0;
+            let y = 0;
+            //default memory location 
+            let location = 0; 
+            return this;
+        }
+        
+    //draws an apple on screen
+    method void drawApple() {
+        var int memAddress;
+        let memAddress = 16384 + location;
+        // Bitmap drawing (apple shape)
+        do Memory.poke(memAddress, 512);
+        do Memory.poke(memAddress + 32, 896);
+        do Memory.poke(memAddress + 64, 448);
+        do Memory.poke(memAddress + 96, 448);
+        do Memory.poke(memAddress + 128, 64);
+        do Memory.poke(memAddress + 160, 1020);
+        do Memory.poke(memAddress + 192, 2046);
+        do Memory.poke(memAddress + 224, 4095);
+        do Memory.poke(memAddress + 256, 4095);
+        do Memory.poke(memAddress + 288, 4095);
+        do Memory.poke(memAddress + 320, 4095);
+        do Memory.poke(memAddress + 352, 4095);
+        do Memory.poke(memAddress + 384, 2046);
+        do Memory.poke(memAddress + 416, 1020);
+        return;
+    }
+
+    method int getX(){
+        return x;
+        }
+
+    method int getY(){
+        return y;
+        }
+
+    //places the food at a random position on the screen
+    method void randomPlacer(Snake snake){
+        var int newX;
+        var int newY;
+        let newX = Random.randRange(511); // 511 is the maximum x-coordinate on screen
+        let newY = Random.randRange(255); // 255 is the maximum y-coordinate on screen
+        while (snake.contains (newX, newY)){
+            let newX = Random.randRange (511);
+            let newY = Random.randRange (255);
+        }
+        let x = newX;
+        let y = newY;
+        let location = (y*32) + (x / 16); //the memory location for drawing (matrix like)
+        return;
+    }
+    method void dispose(){
+        do Memory.deAlloc(this);
+        return this;
+    }
+    }

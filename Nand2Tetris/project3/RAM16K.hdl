@@ -1,0 +1,30 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/3/b/RAM16K.hdl
+/**
+ * Memory of 16K 16-bit registers.
+ * If load is asserted, the value of the register selected by
+ * address is set to in; Otherwise, the value does not change.
+ * The value of the selected register is emitted by out.
+ */
+CHIP RAM16K {
+    IN in[16], load, address[14];
+    OUT out[16];
+
+    PARTS:
+    //we can now use the previous RAM512 to get 4096
+    // 16K = 4K * 4K
+    // we make RAM16K using 4*RAM4K
+
+    //first we read using DMux4way (4 because we multiply by 4) -> we "seperate to 4 different pieces"
+    //we look at the 2 LSB bits for address (sel in dmux4way has 2 places)
+    DMux4Way(in= load, sel= address[12..13], a= load0, b= load1, c= load2, d= load3);
+    // address[0..11] is the the 9 MSB for thr RAM512 -> takes 6 and 3 
+    RAM4K(in= in, load= load0, address= address[0..11], out= ram0);
+    RAM4K(in= in, load= load1, address= address[0..11], out= ram1);
+    RAM4K(in= in, load= load2, address= address[0..11], out= ram2);
+    RAM4K(in= in, load= load3, address= address[0..11], out= ram3);
+    //select one one of the 4 RAM4K
+    Mux4Way16(a= ram0, b= ram1, c= ram2, d= ram3, sel= address[12..13], out= out);    
+}

@@ -1,0 +1,150 @@
+class Snake {
+    field int direction;        // 0=up, 1=right, 2=down, 3=left
+    field int length;           // current length of the snake
+    field Array segmentX;       // array to store x-coordinates
+    field Array segmentY;       // array to store y-coordinates
+
+    constructor Snake new(int startX, int startY, int initialLength) {
+        var int i;
+
+        // Initialize arrays
+        let segmentX = Array.new(1000);
+        let segmentY = Array.new(1000);
+
+        // Set the head of the snake
+        let segmentX[0] = startX;
+        let segmentY[0] = startY;
+
+        // Initialize the body of the snake
+        let i = 1;
+        while (i < initialLength) {
+            let segmentX[i] = startX - i; // Move left for each segment
+            let segmentY[i] = startY;     // Same Y-coordinate for all segments
+            let i = i + 1;
+        }
+
+        // Set snake properties
+        let direction = 1;          // Assume "right" is direction 1
+        let length = initialLength; // Set the initial length
+
+        return this; // Return the snake object
+    }
+
+    method void draw() {
+        var int i;
+        let i = 0;
+        while (i < length) {
+            do Screen.drawRectangle(segmentX[i], segmentY[i], segmentX[i] + 3, segmentY[i] + 3);
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method void move() {
+        var int i;
+        var int oldHeadX, oldHeadY;
+        var int newHeadX, newHeadY;
+
+        // Store the old head
+        let oldHeadX = segmentX[0];
+        let oldHeadY = segmentY[0];
+
+        // Shift body segments
+        let i = length - 1;
+        while (i > 0) {
+            let segmentX[i] = segmentX[i - 1];
+            let segmentY[i] = segmentY[i - 1];
+            let i = i - 1;
+        }
+
+        // Update head based on direction
+        if (direction = 0) { // Up
+            let newHeadX = oldHeadX;
+            let newHeadY = oldHeadY - 1;
+        }
+        if (direction = 1) { // Right
+            let newHeadX = oldHeadX + 1;
+            let newHeadY = oldHeadY;
+        }
+        if (direction = 2) { // Down
+            let newHeadX = oldHeadX;
+            let newHeadY = oldHeadY + 1;
+        }
+        if (direction = 3) { // Left
+            let newHeadX = oldHeadX - 1;
+            let newHeadY = oldHeadY;
+        }
+
+        // Update head position
+        let segmentX[0] = newHeadX;
+        let segmentY[0] = newHeadY;
+
+        return;
+    }
+
+    method void turn (int newDirection) {
+        // Ensure the snake doesn't turn in the opposite direction
+        if(((direction - newDirection) = 2) | ((direction - newDirection) = -2)){ //make sure that we do have Math class
+            return;
+        }
+        let direction = newDirection;
+        return;
+    }
+
+    method void grow() {
+        let length = length + 10;
+        return;
+    }
+
+    method boolean collidesWithBody() {
+        var int i;
+        let i = length - 1;
+        while (i > 0) {
+            if ((segmentX[i] = segmentX[0]) & (segmentY[i] = segmentY[0])) {
+                return true;
+            }
+            let i = i - 1;
+        }
+        return false;
+    }
+
+    method boolean collidesWithWall(int screenWidth, int screenHeight) {
+        if ((segmentY[0] > (screenHeight-7)) | (segmentY[0] = (screenHeight-7)) | (segmentY[0] < 7) |
+            (segmentX[0] > (screenWidth-7)) | (segmentX[0] = (screenWidth-7)) | (segmentX[0] < 7)) {
+            return true;
+        }
+        return false;
+    }
+
+    method boolean contains(int x, int y) {
+        var int i;
+        let i = length - 1;
+        while ((i = 0) | (i > 0)) {
+            if ((segmentX[i] = x) & (segmentY[i] = y)) {
+                return true;
+            }
+            let i = i - 1;
+        }
+        return false;
+    }
+
+    method Array getSegmentX(){
+        return segmentX;
+    }
+    method Array getSegmentY(){
+        return segmentY;
+    }
+    method int getHeadX(){
+    return segmentX[0];
+    }
+    method int getHeadY(){
+    return segmentY[0];
+    }
+
+    method void dispose(){
+        do segmentX.dispose();
+        do segmentY.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+}

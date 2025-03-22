@@ -1,0 +1,18 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/DMux.hdl
+/**
+ * Demultiplexor:
+ * [a, b] = [in, 0] if sel = 0
+ *          [0, in] if sel = 1
+ */
+CHIP DMux {
+    IN in, sel;
+    OUT a, b;
+
+    PARTS: //a= XOR (in,sel) AND b , b= in AND sel
+    Xor(a = in, b = sel, out = outXor);
+    And(a= outXor, b= in, out= a); //takes the out of AND to be the out a
+    And(a= in, b= sel, out= b); //takes the out of AND to be the out b
+}

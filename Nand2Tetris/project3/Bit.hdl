@@ -1,0 +1,23 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/3/a/Bit.hdl
+/**
+ * 1-bit register:
+ * If load is asserted, the register's value is set to in;
+ * Otherwise, the register maintains its current value:
+ * if (load(t)) out(t+1) = in(t), else out(t+1) = out(t)
+ */
+CHIP Bit {
+    IN in, load;
+    OUT out;
+
+    PARTS:
+    //The first DFF captures the current state of the register, storing the existing value
+    DFF(in= selectedValue, out= current);
+    //choses between a and b acording to sel
+    Mux(a= current, b= in, sel= load, out= selectedValue);
+    //uses the dff to output acording to out(t+1) = in(t)
+    DFF(in= selectedValue, out= out);
+} 
+//we need 2 DFF- 1 for current value, the other for output
