@@ -30,8 +30,8 @@ The analyzer is executed with a queue size and a sequence of plugin names:
 ./analyzer <queue_size> <plugin1> <plugin2> ... <pluginN>
 ````
 
-* `queue_size` → Maximum number of items per plugin queue.
-* `plugin1..N` → Names of plugins to load (without `.so`).
+* **queue\_size** → Maximum number of items per plugin queue.
+* **plugin1..N** → Names of plugins to load (without `.so`).
 
 ### Example
 
@@ -109,9 +109,4 @@ The **common infrastructure** (`plugin_common.c/.h`) handles queues, threads, an
 * Input lines are limited to 1024 characters.
 * Same plugin may appear multiple times in the pipeline.
 
-```
-
-👉 Now it will render perfectly on GitHub.  
-
-Do you also want me to **add a Build Instructions section** (with the correct `gcc` commands and `-ldl -lpthread` flags from your PDF) so that anyone cloning your repo knows exactly how to compile it?
 ```
