@@ -7,7 +7,6 @@ Here’s a professional **README.md** draft for your GitHub project, based on th
 This project implements a **modular, plugin-based text processing pipeline** in C.
 It demonstrates dynamic loading of plugins (`.so` shared libraries), thread-safe producer–consumer queues, and graceful shutdown synchronization.
 
----
 
 ## 📖 Overview
 
@@ -23,7 +22,6 @@ Example transformations include:
 * `typewriter` → Simulates typing effect with delays
 * `expander` → Inserts spaces between characters
 
----
 
 ## 🗂️ Project Structure
 
@@ -63,7 +61,6 @@ gcc -std=c11 -Wall -Wextra -fPIC -shared \
 
 > ⚠️ All plugin `.so` files must be placed inside the `output/` directory.
 
----
 
 ## ▶️ Usage
 
@@ -98,7 +95,6 @@ To signal shutdown:
 echo "<END>" | ./analyzer 20 uppercaser rotator logger
 ```
 
----
 
 ## 🧩 Writing Your Own Plugin
 
@@ -125,7 +121,6 @@ const char* my_process_function(const char* input) {
 
 3. **Compile as shared object (`.so`)** and place in `output/`.
 
----
 
 ## ✅ Features
 
