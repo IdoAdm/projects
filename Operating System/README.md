@@ -1,7 +1,7 @@
 ````markdown
 # Modular Pipeline System
 
-This repository contains my implementation of the **Modular Multithreaded String Analyzer Pipeline** in C, developed as the final project for the Operating Systems course at Reichman University:contentReference[oaicite:1]{index=1}.  
+This repository contains my implementation of the **Modular Multithreaded String Analyzer Pipeline** in C, developed as the final project for the Operating Systems course at Reichman University.  
 
 The system demonstrates **systems programming, multithreading, synchronization, and dynamic linking** by building a plugin-based pipeline that processes strings from standard input.  
 Each plugin is dynamically loaded as a shared object (`.so`) and runs in its own thread, communicating via bounded producer–consumer queues.
@@ -108,3 +108,10 @@ The **common infrastructure** (`plugin_common.c/.h`) handles queues, threads, an
 * Only standard libraries plus **pthread** and **dl** are used.
 * Input lines are limited to 1024 characters.
 * Same plugin may appear multiple times in the pipeline.
+
+```
+
+👉 Now it will render perfectly on GitHub.  
+
+Do you also want me to **add a Build Instructions section** (with the correct `gcc` commands and `-ldl -lpthread` flags from your PDF) so that anyone cloning your repo knows exactly how to compile it?
+```
