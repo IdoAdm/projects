@@ -1,7 +1,3 @@
-Here’s a professional **README.md** draft for your GitHub project, based on the uploaded source files:
-
----
-
 # 🔌 Analyzer Plugin Framework
 
 This project implements a **modular, plugin-based text processing pipeline** in C.
@@ -41,7 +37,6 @@ Example transformations include:
 * **`consumer_producer`** – Implements a circular buffer with monitors for safe multithreaded communication
 * **`monitor`** – Encapsulates mutexes/condition variables into a reusable signaling abstraction
 
----
 
 ## ⚙️ Build Instructions
 
