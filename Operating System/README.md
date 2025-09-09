@@ -103,5 +103,3 @@ The **common infrastructure** (`plugin_common.c/.h`) handles queues, threads, an
 * Only standard libraries plus **pthread** and **dl** are used.
 * Input lines are limited to 1024 characters.
 * Same plugin may appear multiple times in the pipeline.
-
-```
