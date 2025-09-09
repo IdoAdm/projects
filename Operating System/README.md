@@ -1,4 +1,3 @@
-````markdown
 # Modular Pipeline System
 
 This repository contains my implementation of the **Modular Multithreaded String Analyzer Pipeline** in C, developed as the final project for the Operating Systems course at Reichman University.  
@@ -28,10 +27,6 @@ The analyzer is executed with a queue size and a sequence of plugin names:
 
 ```bash
 ./analyzer <queue_size> <plugin1> <plugin2> ... <pluginN>
-````
-
-* **queue\_size** → Maximum number of items per plugin queue.
-* **plugin1..N** → Names of plugins to load (without `.so`).
 
 ### Example
 
