@@ -1,136 +1,110 @@
-Perfect 👍 I’ve cleaned this up for you:
+````markdown
+# Modular Pipeline System
 
-* Removed the unnecessary lines from the draft.
-* Checked and fixed spacing (one blank line between sections, no double-spacing inside).
-* Consistent bullet points and code blocks.
+This repository contains my implementation of the **Modular Multithreaded String Analyzer Pipeline** in C, developed as the final project for the Operating Systems course at Reichman University:contentReference[oaicite:1]{index=1}.  
 
-Here’s your polished **README.md**:
+The system demonstrates **systems programming, multithreading, synchronization, and dynamic linking** by building a plugin-based pipeline that processes strings from standard input.  
+Each plugin is dynamically loaded as a shared object (`.so`) and runs in its own thread, communicating via bounded producer–consumer queues.
 
-```markdown
-# 🔌 Analyzer Plugin Framework
+---
 
-This project implements a **modular, plugin-based text processing pipeline** in C.  
-It demonstrates dynamic loading of plugins (`.so` shared libraries), thread-safe producer–consumer queues, and graceful shutdown synchronization.
+## 📚 Project Structure
 
-## 📖 Overview
+- `main.c` – Main application: loads plugins, manages the pipeline, orchestrates execution.  
+- `plugin_common.c/.h` – Shared plugin infrastructure (queue handling, threading, lifecycle).  
+- `plugin_sdk.h` – Defines the required interface for all plugins.  
+- `consumer_producer.c/.h` – Thread-safe bounded queue implementation.  
+- `monitor.c/.h` – Synchronization primitive (mutex + condition variable wrapper).  
+- `plugins/` – Individual plugin implementations (e.g., `uppercaser.c`, `logger.c`).  
+- `output/` – Compiled plugins (`.so` files) are placed here.  
+- `build.sh` – Build script (compiles main and all plugins).  
+- `test.sh` – Automated test script.  
 
-The analyzer program loads a sequence of plugins at runtime, forming a **processing pipeline**.  
-Each plugin receives strings, processes them, and passes the output to the next plugin in the chain.
-
-Example transformations include:
-
-* `uppercaser` → Converts text to uppercase
-* `rotator` → Rotates characters (last → first)
-* `flipper` → Reverses strings
-* `logger` → Logs all processed strings
-* `typewriter` → Simulates typing effect with delays
-* `expander` → Inserts spaces between characters
-
-## 🗂️ Project Structure
-
-```
-
-.
-├── main.c               # Analyzer entrypoint (loads & manages plugins)
-├── plugin\_common.c/.h   # Shared plugin infrastructure (threads, logging, attach)
-├── plugin\_sdk.h         # Public SDK for writing plugins
-├── consumer\_producer.c  # Bounded queue implementation (thread-safe)
-├── monitor.c            # Monitor synchronization primitives
-└── output/              # Compiled plugins (\*.so) go here
-
-````
-
-* **`main.c`** – CLI interface, dynamic plugin loader using `dlopen`, plugin chain orchestration
-* **`plugin_common`** – Provides `plugin_init`, `plugin_fini`, `plugin_place_work`, `plugin_attach`, and logging utilities
-* **`plugin_sdk`** – Defines the required plugin API (`plugin_init`, `plugin_fini`, etc.)
-* **`consumer_producer`** – Implements a circular buffer with monitors for safe multithreaded communication
-* **`monitor`** – Encapsulates mutexes/condition variables into a reusable signaling abstraction
-
-## ⚙️ Build Instructions
-
-1. **Compile the core framework:**
-
-```bash
-gcc -std=c11 -Wall -Wextra -pthread -ldl \
-    -o analyzer main.c plugin_common.c consumer_producer.c monitor.c
-````
-
-2. **Compile each plugin separately** (example for `uppercaser.c`):
-
-```bash
-gcc -std=c11 -Wall -Wextra -fPIC -shared \
-    -o output/uppercaser.so uppercaser.c plugin_common.c consumer_producer.c monitor.c
-```
-
-> ⚠️ All plugin `.so` files must be placed inside the `output/` directory.
+---
 
 ## ▶️ Usage
 
+The analyzer is executed with a queue size and a sequence of plugin names:
+
 ```bash
 ./analyzer <queue_size> <plugin1> <plugin2> ... <pluginN>
-```
+````
 
-* `queue_size` → Maximum number of items allowed in each plugin’s queue
-* `plugin1..N` → Names of plugins to load (without `.so`)
+* `queue_size` → Maximum number of items per plugin queue.
+* `plugin1..N` → Names of plugins to load (without `.so`).
 
 ### Example
 
 ```bash
-./analyzer 20 uppercaser rotator logger
+echo "hello" | ./analyzer 20 uppercaser rotator logger flipper typewriter
 ```
 
-With input:
+Pipeline order:
 
-```bash
-echo "hello" | ./analyzer 20 uppercaser rotator logger
+1. `uppercaser` – convert to uppercase
+2. `rotator` – rotate characters right
+3. `logger` – print to stdout
+4. `flipper` – reverse string
+5. `typewriter` – print with typing effect
+
+Input:
+
+```
+hello
+<END>
 ```
 
-Output might look like:
+Output (approximate):
 
 ```
-[INFO][logger] - OLLEH
+[logger] OHELL
+[typewriter] LLEHO
 ```
 
-To signal shutdown:
+---
 
-```bash
-echo "<END>" | ./analyzer 20 uppercaser rotator logger
-```
+## 🛠 Available Plugins
 
-## 🧩 Writing Your Own Plugin
+* **logger** – Logs all strings to stdout.
+* **typewriter** – Prints each character with 100ms delay.
+* **uppercaser** – Converts text to uppercase.
+* **rotator** – Rotates characters (last → first).
+* **flipper** – Reverses strings.
+* **expander** – Inserts spaces between characters.
 
-To create a new plugin:
+---
 
-1. **Include the SDK:**
+## 🧩 Plugin SDK
+
+All plugins must implement the standard interface defined in `plugin_sdk.h`:
 
 ```c
-#include "plugin_common.h"
+const char* plugin_get_name(void);
+const char* plugin_init(int queue_size);
+const char* plugin_fini(void);
+const char* plugin_place_work(const char* str);
+void plugin_attach(const char* (*next_place_work)(const char*));
+const char* plugin_wait_finished(void);
 ```
 
-2. **Implement the required API functions:**
+The **common infrastructure** (`plugin_common.c/.h`) handles queues, threads, and forwarding, so plugin authors only need to implement their string transformation logic.
 
-```c
-const char* plugin_init(int queue_size) {
-    return common_plugin_init(my_process_function, "myplugin", queue_size);
-}
-
-const char* my_process_function(const char* input) {
-    // custom transformation here
-    return strdup(input); // return new allocated string
-}
-```
-
-3. **Compile as shared object (`.so`)** and place in `output/`.
+---
 
 ## ✅ Features
 
-* Dynamic plugin loading via `dlopen`
-* Modular plugin SDK with shared helper functions
-* Thread-safe producer–consumer queue implementation
-* Graceful shutdown with `<END>` signal
-* Clear logging with `[INFO]` and `[ERROR]` tagging
+* Dynamic plugin loading with `dlopen` and `dlsym`.
+* Each plugin runs in its own thread.
+* Thread-safe producer–consumer queues (no busy waiting).
+* Graceful shutdown when `<END>` is received.
+* Shared infrastructure to reduce boilerplate in plugins.
+* Automated build (`build.sh`) and test (`test.sh`) scripts.
 
-```
+---
 
-Would you like me to also **add short usage snippets for each plugin** (`uppercaser`, `flipper`, `logger`, etc.) so users can immediately try them out from the README?
-```
+## 📖 Notes
+
+* Written in C, compiled with **gcc 13** on **Ubuntu 24.04**.
+* Only standard libraries plus **pthread** and **dl** are used.
+* Input lines are limited to 1024 characters.
+* Same plugin may appear multiple times in the pipeline.
