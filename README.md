@@ -5,11 +5,11 @@ This repository contains selected projects I’ve built as part of my studies an
 - **[Vena – All-in-One Wellness Business Hub](./Vena%20-%20All-in-One%20Wellness%20Business%20Hub)**  
   A full-stack platform for independent wellness professionals to manage their business operations in one place.  
   Includes client management, smart scheduling, personalized landing pages, and automated workflows.  
-  **Stack:** React · TypeScript · Supabase · Render 
+  **Stack:** React · TypeScript · Supabase · Render
   [Visit Vena →](https://vena.software)
 
 - **[Operating System Project](./Operating%20System)**  
-  A C-based operating systems project implementing a **modular pipeline framework** that enables concurrent data processing across user-level threads.  
+  A C-based operating systems project implementing a modular pipeline framework that enables concurrent data processing across user-level threads.  
   Includes process scheduling, context switching, and efficient inter-module communication.
 
 - **[Nand2Tetris](./Nand2Tetris)**  
