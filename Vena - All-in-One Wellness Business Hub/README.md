@@ -1,4 +1,5 @@
-# Vena — The All-in-One Wellness Business Hub
+# Vena — The All-in-One Wellness Business Hub  
+[https://vena.software](https://vena.software)
 
 Vena is a digital platform built to help independent wellness professionals manage their business effortlessly.  
 It brings together scheduling, client management, personalized landing pages, and automated workflows — all in one seamless, interactive hub.
@@ -34,32 +35,19 @@ The platform eliminates the need for multiple apps by integrating everything int
 
 ---
 
-## For Modern Wellness Professionals
-
-Vena is designed for coaches, trainers, therapists, and independent wellness experts who want to simplify their day-to-day operations.
-
-It helps you:
-- Elevate your professional image online
-- Simplify client bookings and payments
-- Save valuable administrative hours
-- Share personalized content effortlessly
-- Grow your practice with powerful digital tools
-
----
-
 ## Tech Stack
 
 - **Frontend:** React + TypeScript + Vite  
 - **Backend:** Supabase (PostgreSQL, Auth, Functions)  
 - **Deployment:** Render  
 - **Email Integration:** Resend API or SMTP  
-- **Real-time Sync:** Supabase subscriptions
+- **Real-Time Sync:** Supabase subscriptions
 
 ---
 
 ## Environment Configuration
 
-Copy `.env.local` and configure:
+Create a `.env.local` file and configure the following variables:
 
 ```bash
 # Required
@@ -68,13 +56,14 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 # Optional email integration
 RESEND_API_KEY=your_resend_api_key
-# OR SMTP
+
+# OR SMTP configuration
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
 SMTP_FROM_EMAIL=noreply@vena.software
-````
+```
 
 ---
 
@@ -95,6 +84,9 @@ npm run build
 
 ## License
 
-This project is part of the **Vena wellness ecosystem**, providing modern digital tools for wellness professionals to manage clients, automate workflows, and grow their business.
+**Vena** is released under a **Free Use License**.  
+You are free to use, modify, and share this project for **personal, educational, or non-commercial purposes**.  
+Attribution to the original project ([vena.software](https://vena.software)) is appreciated.  
+Commercial use requires prior permission from the project owner.
 
-```
+---
