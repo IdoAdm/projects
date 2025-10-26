@@ -1,5 +1,5 @@
 # Projects Portfolio
-
+ 
 This repository contains selected projects I’ve built as part of my studies and personal development:
 
 - **[Vena – All-in-One Wellness Business Hub](./Vena%20-%20All-in-One%20Wellness%20Business%20Hub)**  
