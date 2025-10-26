@@ -1,24 +1,29 @@
-# Projects Portfolio
+# Modular Pipeline System
 
-This repository contains selected projects I’ve built as part of my studies and personal development.  
-Each project demonstrates a different area of computer science, product design, or full-stack development.
+This repository contains my implementation of the **Modular Multithreaded String Analyzer Pipeline** in C, developed as the final project for the Operating Systems course at Reichman University.  
 
----
-
-## 🔹 [Vena – All-in-One Wellness Business Hub](./Vena%20-%20All-in-One%20Wellness%20Business%20Hub)
-A full-stack platform for independent wellness professionals to manage their business operations in one place.  
-Includes client management, smart scheduling, personalized landing pages, and automated workflows.  
-**Stack:** React · TypeScript · Supabase · Render  
-[Live Site →](https://vena.software)
+The system demonstrates **systems programming, multithreading, synchronization, and dynamic linking** by building a plugin-based pipeline that processes strings from standard input.  
+Each plugin is dynamically loaded as a shared object (`.so`) and runs in its own thread, communicating via bounded producer–consumer queues.
 
 ---
 
-## 🔹 [Operating System – Modular Pipeline System](./Operating%20System)
-A C-based operating systems project implementing a **modular pipeline framework** that enables concurrent data processing across user-level threads.  
-Includes process scheduling, context switching, and efficient inter-module communication.
+## 📚 Project Structure
+
+- `main.c` – Main application: loads plugins, manages the pipeline, orchestrates execution.  
+- `plugin_common.c/.h` – Shared plugin infrastructure (queue handling, threading, lifecycle).  
+- `plugin_sdk.h` – Defines the required interface for all plugins.  
+- `consumer_producer.c/.h` – Thread-safe bounded queue implementation.  
+- `monitor.c/.h` – Synchronization primitive (mutex + condition variable wrapper).  
+- `plugins/` – Individual plugin implementations (e.g., `uppercaser.c`, `logger.c`).  
+- `output/` – Compiled plugins (`.so` files) are placed here.  
+- `build.sh` – Build script (compiles main and all plugins).  
+- `test.sh` – Automated test script.  
 
 ---
 
-## 🔹 [Nand2Tetris](./Nand2Tetris)
-Built a complete computer system from the ground up - starting with basic logic gates and culminating in a working CPU, assembler, and compiler.  
-Demonstrates understanding of computer architecture, hardware abstraction, and language design.
+## ▶️ Usage
+
+The analyzer is executed with a queue size and a sequence of plugin names:
+
+```bash
+./analyzer <queue_size> <plugin1> <plugin2> ... <pluginN>
