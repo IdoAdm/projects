@@ -1,0 +1,14 @@
+{
+  "name": "vena-proxy-server",
+  "version": "1.0.0",
+  "description": "Proxy server for Vena application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6"
+  }
+}

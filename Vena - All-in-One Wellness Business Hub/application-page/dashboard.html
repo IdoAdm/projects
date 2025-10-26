@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CHNNLSWNM5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-CHNNLSWNM5');
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Vena Profile Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script type='text/javascript'>
+      window.smartlook||(function(d) {
+        var o=smartlook=function(){ o.api.push(arguments)},h=d.getElementsByTagName('head')[0];
+        var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
+        c.charset='utf-8';c.src='https://web-sdk.smartlook.com/recorder.js';h.appendChild(c);
+        })(document);
+        smartlook('init', '6b2afe492a6c1d8c1762663c3d5bcfafab76307b', { 
+          region: 'eu',
+          crossDomainTracking: true,
+          domains: ['vena.software', 'app.vena.software']
+        });
+    </script>
+
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/dashboard.tsx"></script>
+  </body>
+</html>
